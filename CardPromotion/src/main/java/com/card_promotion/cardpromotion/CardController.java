@@ -2,18 +2,16 @@ package com.card_promotion.cardpromotion;
 
 import com.card_promotion.cardpromotion.forms.GenerateCards;
 import com.card_promotion.cardpromotion.forms.SetCustomerCard;
+import com.card_promotion.cardpromotion.repo.CardRepo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.SecureRandom;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("card")
@@ -21,6 +19,8 @@ import java.util.stream.IntStream;
 @Tag(name = "Карта", description = "Бонусная Карта клиента")
 public class CardController {
     JdbcTemplate jdbcTemplate;
+    @Autowired
+    CardRepo cardRepo;
 
     @PostMapping("/createCard")
     @CrossOrigin("*")
@@ -32,11 +32,11 @@ public class CardController {
     @SneakyThrows
     public String SetCustomerCard(
             @RequestBody SetCustomerCard customerCard,
-            HttpServletRequest request,
             HttpServletResponse response
     ) {
         if (Boolean.TRUE.equals(jdbcTemplate.queryForObject("select exists(select * from card_bonus_system.public.card where card_number=? and free=true)", Boolean.class, customerCard.getCard_number()))) {
-            jdbcTemplate.update("update card_bonus_system.public.card set free=false where card_number=?", customerCard.getCard_number());
+//            jdbcTemplate.update("update card_bonus_system.public.card set free=false where card_number=?", customerCard.getCard_number());
+            cardRepo.updateFreeBy(customerCard.getCard_number());
             return "Карта привязана к пользователю её номер - " + customerCard.getCard_number();
         }
 
