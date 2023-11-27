@@ -1,4 +1,4 @@
-package com.card_promotion.cardpromotion;
+package com.card_promotion.cardpromotion.swagger;
 
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.info.*;

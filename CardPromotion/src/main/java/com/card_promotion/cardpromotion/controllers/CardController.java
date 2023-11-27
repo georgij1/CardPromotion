@@ -1,22 +1,23 @@
-package com.card_promotion.cardpromotion;
+package com.card_promotion.cardpromotion.controllers;
 
 import com.card_promotion.cardpromotion.forms.GenerateCards;
 import com.card_promotion.cardpromotion.forms.SetCustomerCard;
+import com.card_promotion.cardpromotion.repoCard.Repository;
+import com.card_promotion.cardpromotion.services.GeneratedCard;
+import com.card_promotion.cardpromotion.services.StatusCard;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-import java.util.Random;
 
 @RestController
 @RequestMapping("card")
 @AllArgsConstructor
 @Tag(name = "Карта", description = "Бонусная Карта клиента")
 public class CardController {
-    JdbcTemplate jdbcTemplate;
+    public Repository repository;
 
     @PostMapping("/createCard")
     @CrossOrigin("*")
@@ -30,20 +31,7 @@ public class CardController {
             @RequestBody SetCustomerCard customerCard,
             HttpServletResponse response
     ) {
-        if (Boolean.TRUE.equals(jdbcTemplate.queryForObject("select exists(select * from card_bonus_system.public.card where card_number=? and free=true)", Boolean.class, customerCard.getCard_number()))) {
-            jdbcTemplate.update("update card_bonus_system.public.card set free=false where card_number=?", customerCard.getCard_number());
-            return "Карта привязана к пользователю её номер - " + customerCard.getCard_number();
-        }
-
-        else if (Boolean.TRUE.equals(jdbcTemplate.queryForObject("select exists(select * from card_bonus_system.public.card where card_number=? and free=false)", Boolean.class, customerCard.getCard_number()))) {
-            response.setStatus(203);
-            return "Карта уже подключена";
-        }
-
-        else {
-            response.setStatus(404);
-            return "Такой карты нет";
-        }
+        return StatusCard.statusCard(repository, response, customerCard);
     }
 
     @PostMapping("/generateCards")
@@ -56,15 +44,7 @@ public class CardController {
     public String GenerateCards(
             @RequestBody GenerateCards generateCards
     ) {
-        Random random = new Random();
-        int min = 100000;
-        int max = 1000000000;
-        for (int i = 0; i < generateCards.getCount_cards(); i++) {
-            int randomNum = random.nextInt((max - min) + 1) + min;
-            System.out.println(randomNum);
-            jdbcTemplate.update("insert into card_bonus_system.public.card(free, card_number) VALUES (true, ?)", randomNum);
-        }
-        return "Рандомные карты сгенерированы";
+        return GeneratedCard.generatedCard(generateCards, repository);
     }
 
     @GetMapping("/idCard/{idCard}")
@@ -77,7 +57,7 @@ public class CardController {
     public String GetCardById(
             @PathVariable("idCard") Integer idCard
     ) {
-        return jdbcTemplate.queryForList("select * from card_bonus_system.public.card where id_card=?", idCard).toString();
+        return repository.findByCardId(idCard).toString();
     }
 
     @GetMapping("/CardNumber/{CardNumber}")
@@ -90,7 +70,7 @@ public class CardController {
     public String GetCardByNumber(
             @PathVariable("CardNumber") String CardNumber
     ) {
-        return jdbcTemplate.queryForList("select * from card_bonus_system.public.card where card_number=?", CardNumber).toString();
+        return repository.findByCardNumber(CardNumber).toString();
     }
 
     @GetMapping("/GetFreeCards")
@@ -101,6 +81,6 @@ public class CardController {
             description = "Получаем свободные карты"
     )
     public String GetFreeCards () {
-        return jdbcTemplate.queryForList("select * from card_bonus_system.public.card where free=true").toString();
+        return repository.findByStatusFree(true).toString();
     }
 }
