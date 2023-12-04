@@ -5,10 +5,9 @@ import lombok.SneakyThrows;
 
 public class YetIncludeCard {
     @SneakyThrows
-    public static String yetIncludeCard(
+    public static void yetIncludeCard(
             HttpServletResponse response
     ) {
         response.setStatus(203);
-        return "Карта уже подключена";
     }
 }

@@ -1,0 +1,150 @@
+openapi: "3.0.2"
+info:
+  title: Бонусная Система
+  description: Регистрация бонусных карт пользователя
+  version: 1.0.0
+  contact:
+    name: Георгий Панов
+    email: panovgeorgij819@gmail.com
+    url: https://georgij1.github.io/portfoilio_georgii/
+servers:
+  - url: https://localhost:8080
+tags:
+  - name: Карта клиента
+    description: Генерация карт клиента и т.д.
+paths:
+  /cardCustomer/generateCard:
+    post:
+      tags:
+        - Карта клиента
+      summary: Генерация карты клиента
+      description: Позволяет сгенерировать карту клиента
+      operationId: generateCustomerCard
+      requestBody:
+        description: generate a new Card Customer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateCards'
+        required: true
+      responses:
+        '201':
+          description: get success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenerateCards'
+  /cardCustomer/includeCard:
+    post:
+      tags:
+        - Карта клиента
+      summary: Подключение карты клиента
+      description: Позволяет подключить карту клиента
+      operationId: includeCustomerCard
+      requestBody:
+        description: include Customer Card's
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardTable'
+        required: true
+      responses:
+        '201':
+          description: get success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CardTable'
+
+  /cardCustomer/idCard/{idCard}:
+    get:
+      tags:
+        - Карта клиента
+      summary: Card id
+      description: Получаем карту по id карты
+      operationId: CardId
+      parameters:
+        - name: idCard
+          in: path
+          description: CardId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CardTable'
+  /cardCustomer/CardNumber/{CardNumber}:
+    get:
+      tags:
+        - Карта клиента
+      summary: CardNumberGet
+      description: Получаем карту по номеру карты
+      operationId: CardNumber
+      parameters:
+        - name: CardNumber
+          in: path
+          description: CardNumber
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CardTable'
+
+  /cardCustomer/getFreeCards:
+    get:
+      tags:
+        - Карта клиента
+      summary: CardFreeCards
+      description: Получаем список не занятых карт
+      operationId: GetFreeCards
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CardTable'
+components:
+  schemas:
+    GenerateCards:
+      required:
+        - count_cards
+      type: object
+      properties:
+        count_cards:
+          type: integer
+          example: 10
+    CardTable:
+      required:
+        - id_card
+        - free
+        - card_number
+        - id_customer
+      type: object
+      properties:
+        free:
+          type: boolean
+          example: true
+        card_number:
+          type: string
+        id_customer:
+          type: integer

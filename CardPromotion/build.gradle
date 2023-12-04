@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.5'
     id 'io.spring.dependency-management' version '1.1.3'
+    id "org.openapi.generator" version "7.1.0"
 }
 
 group = 'com.card_promotion'
@@ -11,6 +12,20 @@ java {
     sourceCompatibility = '17'
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/src/main/java'
+        }
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -18,6 +33,10 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
@@ -25,4 +44,25 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.3'
+    implementation('org.openapitools:openapi-generator-gradle-plugin:7.1.0') {
+        exclude group: "org.slf4j", module: "slf4j-simple"
+    }
+}
+
+openApiGenerate {
+    generatorName.set("spring")
+    inputSpec.set("$rootDir/src/main/java/com/card_promotion/cardpromotion/swagger/ConfigSwagger.yaml")
+    outputDir.set("$buildDir/generated")
+    apiPackage.set("org.openapi.example.api")
+    invokerPackage.set("org.openapi.example.invoker")
+    modelPackage.set("org.openapi.example.model")
+    configOptions.set([
+            dateLibrary: "java8",
+            interfaceOnly: "true",
+            skipDefaultInterface: "true"
+    ] as Map<? extends String, ? extends String>)
+}
+
+tasks.named('bootBuildImage') {
+    builder = 'paketobuildpacks/builder-jammy-base:latest'
 }
