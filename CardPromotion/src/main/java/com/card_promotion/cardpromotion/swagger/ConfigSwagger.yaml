@@ -8,7 +8,7 @@ info:
     email: panovgeorgij819@gmail.com
     url: https://georgij1.github.io/portfoilio_georgii/
 servers:
-  - url: https://localhost:8080
+  - url: http://localhost:8123
 tags:
   - name: Карта клиента
     description: Генерация карт клиента и т.д.
@@ -25,17 +25,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GenerateCards'
+              $ref: '#/components/schemas/GenerateCardsDto'
         required: true
       responses:
         '201':
           description: get success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GenerateCards'
+
   /cardCustomer/includeCard:
     post:
       tags:
@@ -48,17 +43,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CardTable'
+              $ref: '#/components/schemas/CardTableDto'
         required: true
       responses:
         '201':
           description: get success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CardTable'
+        '404':
+          description: card is not found
+        '406':
+          description: card is already owned
 
   /cardCustomer/idCard/{idCard}:
     get:
@@ -74,15 +67,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CardTable'
+                $ref: '#/components/schemas/CardTableDto'
   /cardCustomer/CardNumber/{CardNumber}:
     get:
       tags:
@@ -103,9 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CardTable'
+                $ref: '#/components/schemas/CardTableDto'
 
   /cardCustomer/getFreeCards:
     get:
@@ -122,10 +112,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CardTable'
+                  $ref: '#/components/schemas/CardTableDto'
 components:
   schemas:
-    GenerateCards:
+    GenerateCardsDto:
       required:
         - count_cards
       type: object
@@ -133,7 +123,7 @@ components:
         count_cards:
           type: integer
           example: 10
-    CardTable:
+    CardTableDto:
       required:
         - id_card
         - free

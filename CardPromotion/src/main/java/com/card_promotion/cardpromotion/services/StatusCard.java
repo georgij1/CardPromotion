@@ -1,25 +1,36 @@
 package com.card_promotion.cardpromotion.services;
 
-import com.card_promotion.cardpromotion.repoCard.Repository;
+import com.card_promotion.cardpromotion.exception.CardIsAlreadyOwned;
+import com.card_promotion.cardpromotion.exception.ItemNotFound;
+import com.card_promotion.cardpromotion.repository.Card;
+import com.card_promotion.cardpromotion.repository.CardsRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import org.openapi.example.model.CardTable;
+import lombok.AllArgsConstructor;
+import org.openapi.example.model.CardTableDto;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Service
+@AllArgsConstructor
 public class StatusCard {
-    public static void statusCard(
-            Repository repository,
-            HttpServletResponse response,
-            CardTable customerCard
-    ) {
-        if (Boolean.TRUE.equals(repository.findByCardIdIncludeCard(String.valueOf(customerCard.getCardNumber())))) {
-            IncludeCard.includeCard(repository, customerCard);
+    ReleaseCard releaseCard;
+    CardsRepository repository;
+
+    public void statusCard(HttpServletResponse response, CardTableDto customerCard) {
+
+        Optional<Card> cardOptional = repository.findCardTableByCardNumber(String.valueOf(customerCard.getCardNumber()));
+
+        if (cardOptional.isEmpty()) {
+            throw new ItemNotFound("Card", customerCard.getCardNumber());
         }
 
-        else if (Boolean.TRUE.equals(repository.findByCardIdYetIncludeCard(String.valueOf(customerCard.getCardNumber())))) {
-            YetIncludeCard.yetIncludeCard(response);
+        var card = cardOptional.get();
+
+        if (!card.getFree()) {
+            throw new CardIsAlreadyOwned(card.getCardNumber());
         }
 
-        else {
-            NotFoundCard.notFoundCard(response);
-        }
+        releaseCard.releaseCard(card.getCardNumber(), card.getIdCustomer());
     }
 }
