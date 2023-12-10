@@ -18,9 +18,7 @@ public class GeneratedCard {
         int max = 1000000000;
         for (int i = 0; i < generateCards; i++) {
             int randomNum = random.nextInt((max - min) + 1) + min;
-
             var card = new Card(null, true, String.valueOf(randomNum), null);
-
             repository.save(card);
         }
     }

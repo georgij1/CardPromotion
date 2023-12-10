@@ -17,7 +17,7 @@ public class StatusCard {
     ReleaseCard releaseCard;
     CardsRepository repository;
 
-    public void statusCard(HttpServletResponse response, CardTableDto customerCard) {
+    public void statusCard(CardTableDto customerCard) {
 
         Optional<Card> cardOptional = repository.findCardTableByCardNumber(String.valueOf(customerCard.getCardNumber()));
 
@@ -31,6 +31,6 @@ public class StatusCard {
             throw new CardIsAlreadyOwned(card.getCardNumber());
         }
 
-        releaseCard.releaseCard(card.getCardNumber(), card.getIdCustomer());
+        releaseCard.releaseCard(card.getCardNumber(), customerCard.getIdCustomer());
     }
 }

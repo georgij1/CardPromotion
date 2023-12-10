@@ -10,6 +10,7 @@ public class ReleaseCard {
     CardsRepository cardsRepository;
 
     public void releaseCard(String cardNumber, Integer idCustomer) {
-//        cardsRepository.releaseCard(cardNumber, idCustomer);
+        Boolean free = false;
+        cardsRepository.updateCardByIdCustomerAndFree(idCustomer, free, cardNumber);
     }
 }

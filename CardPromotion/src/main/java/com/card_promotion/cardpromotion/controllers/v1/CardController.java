@@ -30,7 +30,7 @@ public class CardController implements CardCustomerApi {
 
     @Override
     public ResponseEntity<Void> includeCustomerCard(CardTableDto cardTable) {
-        statusCard.statusCard(response, cardTable);
+        statusCard.statusCard(cardTable);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 

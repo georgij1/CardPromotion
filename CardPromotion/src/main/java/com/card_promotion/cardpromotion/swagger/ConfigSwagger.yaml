@@ -8,7 +8,7 @@ info:
     email: panovgeorgij819@gmail.com
     url: https://georgij1.github.io/portfoilio_georgii/
 servers:
-  - url: http://localhost:8123
+  - url: http://localhost:8080
 tags:
   - name: Карта клиента
     description: Генерация карт клиента и т.д.
