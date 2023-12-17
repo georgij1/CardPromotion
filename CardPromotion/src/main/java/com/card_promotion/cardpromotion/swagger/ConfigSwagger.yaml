@@ -75,6 +75,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CardTableDto'
+        '404':
+          description: not found card
+
   /cardCustomer/CardNumber/{CardNumber}:
     get:
       tags:
@@ -88,7 +91,7 @@ paths:
           description: CardNumber
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: successful operation
@@ -96,6 +99,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CardTableDto'
+        '404':
+          description: not found card
 
   /cardCustomer/getFreeCards:
     get:
@@ -133,8 +138,9 @@ components:
       properties:
         free:
           type: boolean
-          example: true
+          example: false
         card_number:
           type: string
         id_customer:
+          example: 1
           type: integer

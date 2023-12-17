@@ -1,4 +1,4 @@
-create table card
+create table if not exists card
 (
     id_card     serial primary key,
     free        boolean not null,
