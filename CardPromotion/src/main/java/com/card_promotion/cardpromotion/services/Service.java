@@ -6,13 +6,12 @@ import com.card_promotion.cardpromotion.repository.Card;
 import com.card_promotion.cardpromotion.repository.CardsRepository;
 import lombok.AllArgsConstructor;
 import org.openapi.example.model.CardTableDto;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Service
+@org.springframework.stereotype.Service
 @AllArgsConstructor
-public class GetInfo {
+public class Service {
     public CardsRepository repository;
 
     public CardTableDto findByCardId(Long cardId) {
@@ -61,5 +60,12 @@ public class GetInfo {
             throw new CardIsAlreadyOwned(card.getCardNumber());
         }
         releaseCard(card.getCardNumber(), customerCard.getIdCustomer());
+    }
+
+    public void generatedCard(Integer generateCards) {
+        for (int i = 0; i < generateCards; i++) {
+            var card = new Card(null, true, String.valueOf(UUID.randomUUID()), null);
+            repository.save(card);
+        }
     }
 }

@@ -14,37 +14,36 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 public class CardController implements CardCustomerApi {
-    private GetInfo getInfo;
-    private PostInfo postInfo;
+    private Service service;
 
     @Override
     public ResponseEntity<Void> generateCustomerCard(GenerateCardsDto generateCards) {
-        postInfo.generatedCard(generateCards.getCountCards());
+        service.generatedCard(generateCards.getCountCards());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<Void> includeCustomerCard(CardTableDto cardTable) {
-        getInfo.statusCard(cardTable);
+        service.statusCard(cardTable);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<CardTableDto> cardId(Long idCard) {
-        var getByCardId = getInfo.findByCardId(idCard);
+        var getByCardId = service.findByCardId(idCard);
         return ResponseEntity.ok().body(getByCardId);
     }
 
     @Override
     public ResponseEntity<CardTableDto> cardNumber(String cardNumber) {
         String cardNumberStr = String.valueOf(cardNumber);
-        var getByCardNumber = getInfo.findByCardNumber(cardNumberStr);
+        var getByCardNumber = service.findByCardNumber(cardNumberStr);
         return ResponseEntity.ok().body(getByCardNumber);
     }
 
     @Override
     public ResponseEntity<List<CardTableDto>> getFreeCards() {
-        var getFreeCards = getInfo.findFreeCards();
+        var getFreeCards = service.findFreeCards();
         return ResponseEntity.ok().body(getFreeCards);
     }
 
