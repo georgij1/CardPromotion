@@ -47,4 +47,9 @@ public class CardController implements CardCustomerApi {
         var getFreeCards = getInfo.findFreeCards();
         return ResponseEntity.ok().body(getFreeCards);
     }
+
+    @Override
+    public ResponseEntity<Void> halfCheck() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

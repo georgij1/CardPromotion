@@ -118,6 +118,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CardTableDto'
+  /cardCustomer/halfcheck:
+    get:
+      tags:
+        - Карта клиента
+      summary: Статус сервера
+      description: Запущен ли сервер
+      operationId: half-check
+      responses:
+        '200':
+          description: ok
 components:
   schemas:
     GenerateCardsDto:
